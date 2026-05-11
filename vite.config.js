@@ -3,19 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-
-  // GitHub Pages link:
-  // https://abdichan.github.io/HireFlow2/
   base: "/HireFlow2/",
-
   server: {
     port: 5173,
-    proxy: {
-      "/api": {
-        target: "http://localhost:5000",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
   },
 });
