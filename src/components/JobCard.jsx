@@ -83,29 +83,13 @@ function Dollar() {
 }
 
 function Heart({ filled }) {
-  if (filled) {
-    return (
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="#F43F5E"
-        stroke="#F43F5E"
-        strokeWidth="1.5"
-        aria-hidden="true"
-      >
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
-    );
-  }
-
   return (
     <svg
       width="16"
       height="16"
       viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
+      fill={filled ? "#F43F5E" : "none"}
+      stroke={filled ? "#F43F5E" : "currentColor"}
       strokeWidth="1.5"
       aria-hidden="true"
     >
@@ -133,7 +117,32 @@ function getLogoColor(job = {}) {
     ? Math.abs(numericId)
     : companyName.length;
 
-  return LOGO_COLORS[seed % LOGO_COLORS.length];
+  const color = LOGO_COLORS[seed % LOGO_COLORS.length];
+
+  if (typeof color === "string") {
+    return {
+      bg: color,
+      color: "#ffffff",
+    };
+  }
+
+  return (
+    color || {
+      bg: "linear-gradient(135deg, #7c3aed, #2563eb)",
+      color: "#ffffff",
+    }
+  );
+}
+
+function createApplyUrl(job = {}) {
+  if (job.applyUrl) return job.applyUrl;
+  if (job.url) return job.url;
+  if (job.applicationUrl) return job.applicationUrl;
+
+  const title = encodeURIComponent(job.title || "Job");
+  const company = encodeURIComponent(job.company || "HireFlow");
+
+  return `mailto:careers@hireflow.com?subject=Application for ${title} at ${company}`;
 }
 
 function JobCard({
@@ -141,12 +150,13 @@ function JobCard({
   isSaved = false,
   onSave,
   onSelect,
+  onSelectJob,
   animDelay = 0,
 }) {
   if (!job) return null;
 
   const logoColor = getLogoColor(job);
-  const type = job.jobType || "remote";
+  const type = job.jobType || job.type || "remote";
   const company = job.company || "Unknown Company";
   const title = job.title || "Untitled Role";
   const location = job.location || "Remote";
@@ -154,8 +164,26 @@ function JobCard({
     job.description || "No job description has been provided yet.";
   const tags = Array.isArray(job.tags) ? job.tags : [];
 
+  const selectJob = onSelect || onSelectJob;
+
   const handleOpen = () => {
-    onSelect?.(job);
+    selectJob?.(job);
+  };
+
+  const handleApply = (event) => {
+    event.stopPropagation();
+
+    const applyUrl = createApplyUrl(job);
+
+    window.open(applyUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleSave = (event) => {
+    event.stopPropagation();
+
+    if (job.id === undefined || job.id === null) return;
+
+    onSave?.(job.id);
   };
 
   const handleKeyDown = (event) => {
@@ -202,10 +230,7 @@ function JobCard({
           <button
             type="button"
             className="job-card__apply"
-            onClick={(event) => {
-              event.stopPropagation();
-              onSelect?.(job);
-            }}
+            onClick={handleApply}
           >
             Apply
           </button>
@@ -215,10 +240,7 @@ function JobCard({
             className={`job-card__save ${
               isSaved ? "job-card__save--saved" : ""
             }`}
-            onClick={(event) => {
-              event.stopPropagation();
-              onSave?.(job.id);
-            }}
+            onClick={handleSave}
             aria-label={isSaved ? "Unsave job" : "Save job"}
           >
             <Heart filled={isSaved} />
@@ -248,7 +270,9 @@ function JobCard({
 
         <span className="job-card__meta">
           <HomeIcon />
-          <span className={`badge ${badgeClass(type)}`}>{badgeLabel(type)}</span>
+          <span className={`badge ${badgeClass(type)}`}>
+            {badgeLabel(type)}
+          </span>
         </span>
 
         {job.salary && (
