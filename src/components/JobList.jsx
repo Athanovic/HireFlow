@@ -1,5 +1,6 @@
-import jobCard from './JobCard'
+import JobCard from "./JobCard";
 
+function JobList({ jobs = [], savedIds, onSave, onSelect }) {
 const jobs = [
   {
     id: 1,
@@ -42,28 +43,28 @@ const jobs = [
 function JobList() {
   if (jobs.length === 0) {
     return (
-      <div className="job-list">
-        <p className="job-list__eyebrow">Open roles</p>
-        <h2 id="job-list-title">Available Jobs</h2>
-        <p className="job-list__empty">No jobs are available right now.</p>
+      <div className="empty-state">
+        <h3 className="empty-state__title">No jobs found</h3>
+        <p className="empty-state__sub">
+          Try adjusting your search or filter criteria.
+        </p>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="job-list">
-      <div className="job-list__header">
-        <p className="job-list__eyebrow">Open roles</p>
-        <h2>Available Jobs</h2>
-      </div>
-
-      <div className="job-list__grid">
-        {jobs.map((job) => (
-          <JobCard job={job} key={job.id} />
-        ))}
-      </div>
+    <div className="jobs-grid">
+      {jobs.map((job) => (
+        <JobCard
+          key={job.id}
+          job={job}
+          isSaved={savedIds?.has(job.id)}
+          onSave={onSave}
+          onSelect={onSelect}
+        />
+      ))}
     </div>
-  )
+  );
 }
 
-export default JobList
+export default JobList;

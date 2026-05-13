@@ -1,122 +1,243 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useCallback, useEffect, useMemo, useState } from "react";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import JobDetails from "./pages/JobDetails";
+import {
+  AboutPage,
+  CandidatesPage,
+  CategoriesPage,
+  CVPostPage,
+  NewsPage,
+  PostJobPage,
+} from "./pages/InfoPages";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const VALID_PAGES = new Set([
+  "home",
+  "jobs",
+  "about",
+  "categories",
+  "candidates",
+  "news",
+  "post-job",
+  "cv-post",
+]);
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+const SAVED_JOBS_KEY = "hireflow_saved_jobs";
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+function getSafePage(page) {
+  return VALID_PAGES.has(page) ? page : "home";
 }
 
-export default App
+function prefersReducedMotion() {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches
+  );
+}
+
+function App() {
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [savedIds, setSavedIds] = useState(() => {
+    try {
+      const stored = localStorage.getItem(SAVED_JOBS_KEY);
+      const parsed = stored ? JSON.parse(stored) : [];
+      return new Set(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      return new Set();
+    }
+  });
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activePage, setActivePage] = useState("home");
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SAVED_JOBS_KEY, JSON.stringify([...savedIds]));
+    } catch {
+      // Ignore storage errors so the app does not crash.
+    }
+  }, [savedIds]);
+
+  const scrollToTop = useCallback(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+      });
+    });
+  }, []);
+
+  const scrollToJobs = useCallback(() => {
+    setSelectedJob(null);
+    setActivePage("jobs");
+
+    requestAnimationFrame(() => {
+      const jobsSection = document.getElementById("jobs-anchor");
+
+      if (jobsSection) {
+        jobsSection.scrollIntoView({
+          behavior: prefersReducedMotion() ? "auto" : "smooth",
+          block: "start",
+        });
+      } else {
+        window.scrollTo({
+          top: 0,
+          behavior: prefersReducedMotion() ? "auto" : "smooth",
+        });
+      }
+    });
+  }, []);
+
+  const handleSave = useCallback((id) => {
+    if (id === undefined || id === null) return;
+
+    setSavedIds((previousIds) => {
+      const nextIds = new Set(previousIds);
+
+      if (nextIds.has(id)) {
+        nextIds.delete(id);
+      } else {
+        nextIds.add(id);
+      }
+
+      return nextIds;
+    });
+  }, []);
+
+  const handleNavigate = useCallback(
+    (page) => {
+      const safePage = getSafePage(page);
+
+      setSelectedJob(null);
+
+      if (safePage === "jobs") {
+        scrollToJobs();
+        return;
+      }
+
+      setActivePage(safePage);
+
+      if (safePage === "home") {
+        setActiveCategory("All");
+      }
+
+      scrollToTop();
+    },
+    [scrollToJobs, scrollToTop]
+  );
+
+  const handleSelectJob = useCallback(
+    (job) => {
+      if (!job || job.id === undefined || job.id === null) return;
+
+      setActivePage("jobs");
+      setSelectedJob(job);
+      scrollToTop();
+    },
+    [scrollToTop]
+  );
+
+  const handleBackToJobs = useCallback(() => {
+    setSelectedJob(null);
+    scrollToJobs();
+  }, [scrollToJobs]);
+
+  const handleCategorySelect = useCallback(
+    (category) => {
+      setSelectedJob(null);
+      setActiveCategory(category || "All");
+      scrollToJobs();
+    },
+    [scrollToJobs]
+  );
+
+  const currentNavbarPage = selectedJob ? "jobs" : activePage;
+
+  const renderedPage = useMemo(() => {
+    if (selectedJob) {
+      return (
+        <JobDetails
+          job={selectedJob}
+          onBack={handleBackToJobs}
+          isSaved={savedIds.has(selectedJob.id)}
+          onSave={handleSave}
+        />
+      );
+    }
+
+    switch (activePage) {
+      case "about":
+        return <AboutPage onNavigate={handleNavigate} />;
+
+      case "categories":
+        return (
+          <CategoriesPage
+            onNavigate={handleNavigate}
+            onCategorySelect={handleCategorySelect}
+          />
+        );
+
+      case "candidates":
+        return <CandidatesPage onNavigate={handleNavigate} />;
+
+      case "news":
+        return <NewsPage onNavigate={handleNavigate} />;
+
+      case "post-job":
+        return <PostJobPage onNavigate={handleNavigate} />;
+
+      case "cv-post":
+        return <CVPostPage onNavigate={handleNavigate} />;
+
+      case "home":
+      case "jobs":
+      default:
+        return (
+          <Home
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            savedIds={savedIds}
+            onSave={handleSave}
+            onSelectJob={handleSelectJob}
+            onNavigate={handleNavigate}
+            activeCategory={activeCategory}
+            setActiveCategory={setActiveCategory}
+          />
+        );
+    }
+  }, [
+    activeCategory,
+    activePage,
+    handleBackToJobs,
+    handleCategorySelect,
+    handleNavigate,
+    handleSave,
+    handleSelectJob,
+    savedIds,
+    searchTerm,
+    selectedJob,
+  ]);
+
+  return (
+    <div className="app app-shell">
+      <Navbar
+        activePage={currentNavbarPage}
+        onNavigate={handleNavigate}
+        savedCount={savedIds.size}
+      />
+
+      <main className="main-content app__body">{renderedPage}</main>
+
+      <footer className="footer">
+        <div className="container">
+          © {new Date().getFullYear()} <strong>HireFlow</strong> · Find and
+          become a professional.
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
