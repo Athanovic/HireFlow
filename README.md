@@ -1,549 +1,352 @@
-# HireFlow
+# HireFlow - Job Search Platform
 
-HireFlow is a job search and hiring web application built with React and Vite.
+HireFlow is a full-stack job search and hiring web application built with React, TypeScript, Vite, Node.js, Express, and SQLite. It helps users browse jobs, search for jobs, filter jobs by category, view job details, save jobs, and manage job applications.
 
-It helps users browse jobs, search for jobs, filter jobs by category, view job details, and save jobs they like.
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Setup Instructions](#setup-instructions)
+- [Environment Variables](#environment-variables)
+- [API Endpoints](#api-endpoints)
+- [Authentication Flow](#authentication-flow)
+- [CRUD Operations](#crud-operations)
+- [How to Run Frontend/Bankend](#how-to-run-frontendbackend)
+- [Example API Requests](#example-api-requests)
+- [Future Improvements](#future-improvements)
 
----
+## Project Overview
 
-## Repository Description
+HireFlow addresses the challenges of modern job searching by providing a centralized platform where job seekers can discover opportunities, save interesting listings, and manage their application process. Employers can post job listings and manage their postings through secure authentication.
 
-This repository contains the source code for HireFlow. It includes the React frontend, reusable components, styling files, page logic, and frontend API helper logic used to fetch and display job listings.
+The platform consists of:
+- **Frontend**: React + TypeScript + Vite application with responsive design
+- **Backend**: Node.js + Express REST API with SQLite database
+- **Authentication**: JWT-based secure authentication with role-based access control
 
-The `backend/` folder currently exists as a placeholder only. It does not contain backend files yet.
+## Features
 
----
+### For Job Seekers
+- Browse and search job listings from multiple sources
+- Filter jobs by category, type, location, and keywords
+- View detailed job information including full descriptions
+- Save jobs for later reference
+- Apply to jobs directly through external links
+- User authentication and profile management
 
-## Purpose of the Project
+### For Employers/Recruiters
+- Post new job listings
+- Edit and manage their own job postings
+- View analytics on job applications (future feature)
+- Secure authentication and authorization
 
-The purpose of HireFlow is to make job searching easier, faster, and more organized.
+### General
+- Responsive design for mobile and desktop
+- Loading states and error handling
+- Demo data fallback when external APIs are unavailable
+- RESTful API design with proper HTTP status codes
+- Role-based access control (Job Seeker, Employer, Admin)
 
-Users can:
+## Tech Stack
 
-- View available jobs
-- Search for jobs
-- Filter jobs by category
-- View full job details
-- Save jobs
-- Visit pages like About, Categories, Candidates, News, Job Post, and CV Post
+### Frontend
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and development server
+- **CSS3** - Styling
+- **React Router** - Client-side routing
 
----
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **SQLite** - Database
+- **JWT** - Authentication tokens
+- **bcryptjs** - Password hashing
+- **CORS** - Cross-origin resource sharing
 
-## Team Members and Responsibilities
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **GitHub Actions** - CI/CD (planned)
+- **gh-pages** - Deployment
 
-### 👨‍💻 Athanas – Frontend Lead
+## Setup Instructions
 
-**Responsibilities**
-
-- Navbar
-- Home page layout
-- Page design
-- Basic styling
-- Mobile responsiveness
-
-**Files**
-
-- `src/components/Navbar.jsx`
-- `src/pages/Home.jsx`
-- `src/styles/main.css`
-- `src/App.css`
-- `src/index.css`
-
----
-
-### 👨‍💻 Abdirahman Cabdi – API & Logic Lead
-
-**Responsibilities**
-
-- Frontend API helper logic
-- Fetch logic
-- Job data handling
-- App state management
-- Loading and error handling
-- Main app logic
-
-**Files**
-
-- `src/services/api.js`
-- `src/App.jsx`
-
----
-
-### 👨‍💻 Donald – Data Display Lead
-
-**Responsibilities**
-
-- Job cards
-- Job list
-- Displaying job information clearly
-
-**Files**
-
-- `src/components/JobList.jsx`
-- `src/components/JobCard.jsx`
-
----
-
-### 👨‍💻 Albert – Interaction & UX Lead
-
-**Responsibilities**
-
-- Search
-- Filters
-- Loader
-- Error messages
-- User interaction
-
-**Files**
-
-- `src/components/SearchBar.jsx`
-- `src/components/Filters.jsx`
-- `src/components/Loader.jsx`
-- `src/components/Error.jsx`
-
----
-
-## Main Features
-
-- Browse available jobs
-- Search jobs by keyword
-- Filter jobs by category
-- View job details
-- Save jobs
-- Navigate between different pages
-- Loading and error states
-- Frontend API helper for job data
-- GitHub Pages deployment support
-
----
-
-## Technologies Used
-
-- React
-- JavaScript
-- Vite
-- CSS
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
 - Git
-- GitHub
-- GitHub Pages
 
----
+### Installation
 
-## Folder Structure
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/HireFlow2.git
+   cd HireFlow2
+   ```
 
-```txt
-HIREFLOW2/
-│
-├── backend/
-│
-├── public/
-│
-├── src/
-│   ├── assets/
-│   │   ├── hero.png
-│   │   ├── react.svg
-│   │   └── vite.svg
-│   │
-│   ├── components/
-│   │   ├── Error.jsx
-│   │   ├── Filters.jsx
-│   │   ├── JobCard.jsx
-│   │   ├── JobList.jsx
-│   │   ├── Loader.jsx
-│   │   ├── Navbar.jsx
-│   │   └── SearchBar.jsx
-│   │
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── InfoPages.jsx
-│   │   └── JobDetails.jsx
-│   │
-│   ├── services/
-│   │   └── api.js
-│   │
-│   ├── styles/
-│   │   └── main.css
-│   │
-│   ├── App.css
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-│
-├── .gitignore
-├── index.html
-├── package.json
-├── package-lock.json
-├── README.md
-└── vite.config.js
-```
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
----
+3. **Set up environment variables**
+   Create a `.env` file in the root directory:
+   ```env
+   # Server Configuration
+   PORT=5000
+   NODE_ENV=development
 
-## Important Files
+   # JWT Configuration
+   ACCESS_TOKEN_SECRET=your-super-secret-key-change-in-production
 
-### `src/main.jsx`
+   # API Configuration (optional)
+   VITE_API_BASE_URL=http://localhost:5000
+   REMOTIVE_API_URL=https://remotive.com/api/remote-jobs
 
-Starts the React app and connects it to `index.html`.
+   # Database (SQLite - automatic)
+   ```
 
----
+4. **Initialize the database**
+   The database will be automatically created on first startup:
+   ```bash
+   npm run dev
+   ```
 
-### `src/App.jsx`
+5. **Seed initial data (optional)**
+   Run the database seed script to create sample data:
+   ```bash
+   npm run seed
+   ```
 
-Controls the main logic of the app.
+## Environment Variables
 
-It manages:
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `PORT` | Server port | No | 5000 |
+| `NODE_ENV` | Environment mode | No | development |
+| `ACCESS_TOKEN_SECRET` | JWT secret key | Yes | (must be set) |
+| `VITE_API_BASE_URL` | Base API URL for frontend | No | (empty - uses relative) |
+| `REMOTIVE_API_URL` | External job API URL | No | https://remotive.com/api/remote-jobs |
 
-- Current page
-- Selected job
-- Saved jobs
-- Search term
-- Active category
-- Navigation logic
+## API Endpoints
 
----
+### Authentication Routes
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/auth/register` | Register new user | No |
+| POST | `/api/auth/login` | Login user | No |
+| GET | `/api/auth/me` | Get current user profile | Yes |
 
-### `src/pages/Home.jsx`
+### Job Routes
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/api/jobs` | Get all jobs (with filtering) | No |
+| GET | `/api/jobs/:id` | Get job by ID | No |
+| POST | `/api/jobs` | Create new job | Yes (Employer/Admin) |
+| PUT | `/api/jobs/:id` | Update job | Yes (Owner/Admin/Employer) |
+| DELETE | `/api/jobs/:id` | Delete job | Yes (Owner/Admin/Employer) |
+| GET | `/api/jobs/my/jobs` | Get user's posted jobs | Yes |
 
-Displays the home page, search area, filters, and job listings.
+### Query Parameters for GET `/api/jobs`
+- `search`: Search term for title, company, description
+- `category`: Filter by job category
+- `limit`: Number of results to return (default: 40)
+- `offset`: Number of results to skip (for pagination)
 
----
+## Authentication Flow
 
-### `src/pages/JobDetails.jsx`
+1. **Registration**
+   - User submits registration form with username, email, password, and optional role
+   - Backend validates input, checks for existing user, hashes password
+   - New user record created in database
+   - JWT token generated and returned to client
+   - Client stores token in localStorage or cookie
 
-Displays full information about a selected job.
+2. **Login**
+   - User submits login credentials
+   - Backend validates email/password combination
+   - On success, JWT token generated and returned
+   - Client stores token for subsequent requests
 
----
+3. **Protected Routes**
+   - Client includes JWT in Authorization header: `Bearer <token>`
+   - Backend verifies token validity and extracts user info
+   - Route-specific role checks performed if required
+   - Invalid/missing tokens return 401 Unauthorized
+   - Insufficient permissions return 403 Forbidden
 
-### `src/pages/InfoPages.jsx`
+4. **Token Expiry**
+   - Tokens expire after 1 hour for security
+   - Client must refresh token by re-login
+   - Refresh token implementation planned for future
 
-Contains extra pages such as:
+## CRUD Operations
 
-- About
-- Categories
-- Candidates
-- News
-- Post Job
-- CV Post
+### Users
+- **Create**: POST `/api/auth/register` (public)
+- **Read**: GET `/api/auth/me` (protected), GET `/api/users/:id` (protected/admin)
+- **Update**: PUT `/api/users/:id` (protected/owner/admin)
+- **Delete**: DELETE `/api/users/:id` (protected/admin)
 
----
+### Jobs
+- **Create**: POST `/api/jobs` (protected - Employer/Admin only)
+- **Read**: GET `/api/jobs` (public), GET `/api/jobs/:id` (public)
+- **Update**: PUT `/api/jobs/:id` (protected - Owner/Admin/Employer)
+- **Delete**: DELETE `/api/jobs/:id` (protected - Owner/Admin/Employer)
 
-### `src/services/api.js`
+### Saved Jobs
+- **Create**: POST `/api/saved-jobs` (protected)
+- **Read**: GET `/api/saved-jobs` (protected)
+- **Delete**: DELETE `/api/saved-jobs/:jobId` (protected)
 
-Contains the frontend job data and API helper logic.
+## How to Run Frontend/Backend
 
-This file helps the app:
-
-- Fetch jobs
-- Filter jobs
-- Normalize job data
-- Handle fallback demo jobs
-- Open apply links
-
----
-
-### `backend/`
-
-This folder is currently empty.
-
-It is kept as a placeholder for future backend work if the project later needs a real backend server, database, routes, or controllers.
-
----
-
-## How the App Works
-
-HireFlow currently works mainly as a frontend React application.
-
-Flow:
-
-```txt
-User searches or filters jobs
-        ↓
-React frontend updates state
-        ↓
-src/services/api.js handles job data
-        ↓
-Jobs are displayed in JobList and JobCard
-        ↓
-User can view details or apply
-```
-
----
-
-## GitHub Pages Note
-
-GitHub Pages only hosts frontend/static websites.
-
-That means GitHub Pages can run:
-
-- HTML
-- CSS
-- JavaScript
-- React build files
-
-GitHub Pages does not run a backend server.
-
-For this project, the live GitHub Pages version uses frontend logic from:
-
-```txt
-src/services/api.js
-```
-
----
-
-## How to Run the Project Locally
-
-### 1. Clone the Repository
-
+### Development Mode (Recommended)
 ```bash
-git clone <repository-url>
-```
-
-### 2. Open the Project Folder
-
-```bash
-cd HireFlow2
-```
-
-### 3. Install Dependencies
-
-```bash
-npm install
-```
-
-### 4. Run the Project
-
-```bash
+# Start both frontend and backend concurrently
 npm run dev
 ```
+This starts:
+- Backend server on http://localhost:5000
+- Frontend dev server on http://localhost:5173
+- Automatic proxying of /api requests to backend
 
-### 5. Open the Local Website
-
-```txt
-http://localhost:5173/
-```
-
----
-
-## How to Build the Project
-
+### Backend Only
 ```bash
+npm run dev:server
+# or
+npm run server
+```
+Starts backend server on http://localhost:5000
+
+### Frontend Only
+```bash
+npm run dev:client
+```
+Starts frontend dev server on http://localhost:5173
+(Requires backend running separately or VITE_API_BASE_URL set)
+
+### Production Build
+```bash
+# Build frontend for production
 npm run build
+
+# Preview production build locally
+npm run preview
 ```
 
-This creates a production-ready version of the app inside the `dist/` folder.
-
----
-
-## How to Deploy to GitHub Pages
-
-Make sure GitHub Pages is set to:
-
-```txt
-Source: Deploy from a branch
-Branch: gh-pages
-Folder: / root
-```
-
-Then deploy with:
-
+### Deployment to GitHub Pages
 ```bash
+# Build and deploy to GitHub Pages
 npm run deploy
 ```
+Note: GitHub Pages only hosts static frontend. Backend must be hosted separately.
 
-After deployment, the live website should be available at:
+## Example API Requests
 
-```txt
-https://abdichan.github.io/HireFlow2/
-```
-
----
-
-## How to Push Changes
-
-After editing files, run:
-
+### Register New User
 ```bash
-git status
-git add .
-git commit -m "Update HireFlow"
-git push origin main
+curl -X POST http://localhost:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "johndoe",
+    "email": "john@example.com",
+    "password": "securepassword123",
+    "role": "job_seeker"
+  }'
 ```
 
-Then redeploy:
-
+### Login User
 ```bash
-npm run deploy
+curl -X POST http://localhost:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "securepassword123"
+  }'
 ```
 
----
-
-## How to Use HireFlow
-
-1. Open the website.
-2. Browse the available jobs.
-3. Use the search bar to search for a job.
-4. Use the filters to choose a category.
-5. Click on a job card to view full details.
-6. Click the save icon to save a job.
-7. Click Apply to open the job application link.
-8. Use the navbar to move between pages.
-
----
-
-## Git Branches
-
-The project uses different branches for different team members.
-
-```txt
-main
-donald
-ui-ux-interaction
-feature/ui-navbar
-feature/api-fetch-logic
-```
-
----
-
-## Branch Responsibilities
-
-### `main`
-
-Main stable branch. Only working code should be merged here.
-
----
-
-### `donald`
-
-Used for job display work.
-
-Files:
-
-- `src/components/JobList.jsx`
-- `src/components/JobCard.jsx`
-
----
-
-### `ui-ux-interaction`
-
-Used for interaction and UX work.
-
-Files:
-
-- `src/components/SearchBar.jsx`
-- `src/components/Filters.jsx`
-- `src/components/Loader.jsx`
-- `src/components/Error.jsx`
-
----
-
-### `feature/ui-navbar`
-
-Used for frontend layout and navbar work.
-
-Files:
-
-- `src/components/Navbar.jsx`
-- `src/pages/Home.jsx`
-- CSS files
-
----
-
-### `feature/api-fetch-logic`
-
-Used for Abdirahman Cabdi’s API and app logic work.
-
-Files:
-
-- `src/services/api.js`
-- `src/App.jsx`
-
----
-
-## Git Flow
-
-### 1. Start from main
-
+### Get All Jobs
 ```bash
-git checkout main
-git pull origin main
+curl -X GET http://localhost:5000/api/jobs?search=developer&category=engineering&limit=10
 ```
 
-### 2. Switch to your branch
-
-Example:
-
+### Create Job (Employer)
 ```bash
-git checkout feature/api-fetch-logic
+curl -X POST http://localhost:5000/api/jobs \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <jwt-token>" \
+  -d '{
+    "title": "Senior React Developer",
+    "company": "TechCorp",
+    "category": "engineering",
+    "jobType": "full-time",
+    "location": "Remote",
+    "description": "We are looking for an experienced React developer...",
+    "salary": "$80k-$120k"
+  }'
 ```
 
-### 3. Make your changes
-
-Work on the files assigned to your role.
-
-### 4. Check changes
-
+### Update Job
 ```bash
-git status
+curl -X PUT http://localhost:5000/api/jobs/1 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <jwt-token>" \
+  -d '{
+    "title": "Senior React Developer (Remote)",
+    "salary": "$90k-$130k"
+  }'
 ```
 
-### 5. Add changes
+## Future Improvements
 
-```bash
-git add .
-```
+### Phase 1 (Immediate)
+- [ ] Add password reset functionality
+- [ ] Implement email verification for new accounts
+- [ ] Add resume upload and profile completion for job seekers
+- [ ] Implement job application tracking system
+- [ ] Add company profiles and employer dashboards
 
-### 6. Commit changes
+### Phase 2 (Short-term)
+- [ ] Add real-time notifications using WebSockets
+- [ ] Implement advanced search with faceted filtering
+- [ ] Add bookmark collections and job recommendations
+- [ ] Integrate with LinkedIn/GitHub for profile import
+- [ ] Add analytics dashboard for employers
 
-```bash
-git commit -m "Fix app logic"
-```
+### Phase 3 (Long-term)
+- [ ] Implement multi-language support (i18n)
+- [ ] Add video interview scheduling functionality
+- [ ] Implement AI-powered job matching and resume scoring
+- [ ] Add employer branding and premium job listings
+- [ ] Implement mobile application (React Native)
 
-### 7. Push branch
+### Technical Improvements
+- [ ] Migrate to PostgreSQL for better scalability
+- [ ] Implement GraphQL API alongside REST
+- [ ] Add comprehensive test suite (unit, integration, e2e)
+- [ ] Implement caching layer with Redis
+- [ ] Add rate limiting and API throttling
+- [ ] Containerize with Docker and Kubernetes deployment
+- [ ] Implement CI/CD pipeline with automated testing
 
-```bash
-git push origin feature/api-fetch-logic
-```
+## Contributing
 
-### 8. Create a Pull Request
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-Create a pull request from your branch into `main`.
+Please make sure to follow the existing code style and add tests for new functionality.
 
-Example:
+## License
 
-```txt
-feature/api-fetch-logic → main
-```
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## Acknowledgments
 
-## Example Commit Messages
-
-```txt
-Fix app logic
-Update job cards
-Improve navbar styling
-Add loader component
-Fix search filtering
-Update README
-Improve mobile responsiveness
-Deploy to GitHub Pages
-```
-
----
-
-## Project Summary
-
-HireFlow is a React and Vite job search platform.
-
-It allows users to:
-
-- Search jobs
-- Filter jobs
-- View job details
-- Save jobs
-- Apply for jobs
-- Navigate career pages
-
-The project is divided into team roles so each member works on a clear part of the system.
-
-The `backend/` folder is currently empty and is only kept for future backend development.
+- [Remotive API](https://remotive.com/) for providing job listing data
+- The open-source community for various libraries and tools
+- Bootcamp instructors and mentors for guidance and support

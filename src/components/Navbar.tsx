@@ -1,4 +1,4 @@
-// src/components/Navbar.jsx
+
 
 function HeartIcon() {
   return (
@@ -22,7 +22,7 @@ function Navbar({ activePage = "home", onNavigate = () => {}, savedCount = 0 }) 
     <nav className="navbar">
       <div className="container navbar__inner">
         {/* Logo — HireFlow */}
-        <button className="navbar__logo" onClick={() => onNavigate("home")}>
+        <button type="button" className="navbar__logo" onClick={() => onNavigate("home")}>
           <div className="navbar__logo-mark">◫</div>
           HireFlow
         </button>
@@ -32,6 +32,7 @@ function Navbar({ activePage = "home", onNavigate = () => {}, savedCount = 0 }) 
           {links.map(({ key, label }) => (
             <button
               key={key}
+              type="button"
               className={`navbar__link ${activePage === key ? "navbar__link--active" : ""}`}
               onClick={() => onNavigate(key)}
             >
@@ -40,9 +41,10 @@ function Navbar({ activePage = "home", onNavigate = () => {}, savedCount = 0 }) 
           ))}
         </div>
 
-        {/* Actions */}
+        {}
         <div className="navbar__actions">
           <button
+            type="button"
             className="navbar__saved"
             onClick={() => onNavigate("jobs")}
             aria-label={`${savedCount} saved jobs`}
@@ -50,12 +52,14 @@ function Navbar({ activePage = "home", onNavigate = () => {}, savedCount = 0 }) 
             <HeartIcon />
             <span className="navbar__saved-badge">{savedCount}</span>
           </button>
-          <button className="btn btn--primary" onClick={() => onNavigate("post-job")}>
+          <button type="button" className="btn btn--primary" onClick={() => onNavigate("post-job")}>
             Job Post
           </button>
-          <button className="btn btn--outline" onClick={() => onNavigate("cv-post")}>
+          <button type="button" className="btn btn--outline" onClick={() => onNavigate("cv-post")}>
             CV Post
           </button>
+          <button type="button" className="btn btn--ghost" onClick={() => onNavigate("login")}>Login</button>
+          <button type="button" className="btn btn--ghost" onClick={() => onNavigate("register")}>Sign up</button>
         </div>
       </div>
     </nav>

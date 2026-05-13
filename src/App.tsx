@@ -10,6 +10,7 @@ import {
   NewsPage,
   PostJobPage,
 } from "./pages/InfoPages";
+import { LoginPage, RegisterPage } from "./pages/AuthPages";
 import "./App.css";
 
 const VALID_PAGES = new Set([
@@ -21,6 +22,8 @@ const VALID_PAGES = new Set([
   "news",
   "post-job",
   "cv-post",
+  "login",
+  "register",
 ]);
 
 const SAVED_JOBS_KEY = "hireflow_saved_jobs";
@@ -187,6 +190,12 @@ function App() {
 
       case "post-job":
         return <PostJobPage onNavigate={handleNavigate} />;
+
+      case "login":
+        return <LoginPage onNavigate={handleNavigate} />;
+
+      case "register":
+        return <RegisterPage onNavigate={handleNavigate} />;
 
       case "cv-post":
         return <CVPostPage onNavigate={handleNavigate} />;

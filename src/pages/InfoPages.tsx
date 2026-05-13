@@ -1,6 +1,5 @@
-// src/pages/InfoPage.jsx
 
-/* ─── Reusable section wrapper ─── */
+import { useState } from "react";
 function Section({ title, sub, children }) {
   return (
     <div style={{ padding:"60px 0 100px" }}>
@@ -15,7 +14,7 @@ function Section({ title, sub, children }) {
   );
 }
 
-/* ─── ABOUT PAGE ─── */
+
 export function AboutPage({ onNavigate }) {
   return (
     <Section
@@ -43,7 +42,7 @@ export function AboutPage({ onNavigate }) {
   );
 }
 
-/* ─── CATEGORIES PAGE ─── */
+
 export function CategoriesPage({ onNavigate, onCategorySelect }) {
   const cats = [
     { value:"digital",     label:"Digital",      icon:"💻", count:120, desc:"Digital marketing, social media, content creation and SEO roles." },
@@ -77,7 +76,7 @@ export function CategoriesPage({ onNavigate, onCategorySelect }) {
   );
 }
 
-/* ─── CANDIDATES PAGE ─── */
+
 export function CandidatesPage({ onNavigate }) {
   return (
     <Section title="For Candidates" sub="Everything you need to land your next role — faster.">
@@ -105,7 +104,7 @@ export function CandidatesPage({ onNavigate }) {
   );
 }
 
-/* ─── NEWS PAGE ─── */
+
 export function NewsPage() {
   const articles = [
     { tag:"Hiring Trends",  date:"May 10, 2025", title:"Remote work is here to stay: 68% of tech roles now offer full flexibility", excerpt:"New data from HireFlow's Q2 report reveals remote and hybrid positions dominate the tech job market, with salaries matching or exceeding on-site equivalents." },
@@ -133,84 +132,236 @@ export function NewsPage() {
   );
 }
 
-/* ─── POST JOB PAGE ─── */
-export function PostJobPage() {
+
+export function PostJobPage({ onNavigate }) {
+  const [formData, setFormData] = useState({
+    title: "",
+    company: "",
+    location: "",
+    salary: "",
+    jobType: "Full-time",
+    description: ""
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setMessage("Please login first");
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch("/api/jobs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (res.ok) {
+        setMessage("✓ Job posted!");
+        setFormData({ title: "", company: "", location: "", salary: "", jobType: "Full-time", description: "" });
+      } else {
+        setMessage("✗ Failed to post job");
+      }
+    } catch (err) {
+      setMessage("✗ Error: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Section title="Post a Job" sub="Reach thousands of qualified candidates across Africa and beyond.">
       <div style={{ maxWidth:560, margin:"0 auto", background:"var(--surface)", border:"1px solid var(--border2)", borderRadius:"var(--r-xl)", padding:"36px", animation:"fadeUp .4s ease both" }}>
-        {[
-          { label:"Job Title",    placeholder:"e.g. Senior Frontend Developer", type:"text" },
-          { label:"Company Name", placeholder:"e.g. Acme Corp",                 type:"text" },
-          { label:"Location",     placeholder:"e.g. Nairobi, Kenya or Remote",  type:"text" },
-          { label:"Salary Range", placeholder:"e.g. KES 80k–120k",             type:"text" },
-        ].map(f => (
-          <div key={f.label} style={{ marginBottom:18 }}>
-            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>{f.label}</label>
-            <input
-              type={f.type} placeholder={f.placeholder}
-              style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", transition:"border-color .2s" }}
-              onFocus={e => e.target.style.borderColor="var(--violet)"}
-              onBlur={e => e.target.style.borderColor="var(--border2)"}
-            />
+        {message && (
+          <div style={{ marginBottom:16, padding:12, background: message.includes("✓") ? "#10b98120" : "#ef444420", color: message.includes("✓") ? "#10b981" : "#ef4444", borderRadius:"var(--r-md)", fontSize:14 }}>
+            {message}
           </div>
-        ))}
-        <div style={{ marginBottom:18 }}>
-          <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Job Type</label>
-          <select style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", appearance:"none" }}>
-            <option>Full-time</option><option>Contract</option>
-            <option>Part-time</option><option>Remote</option><option>Freelance</option>
-          </select>
-        </div>
-        <div style={{ marginBottom:24 }}>
-          <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Description</label>
-          <textarea
-            placeholder="Describe the role, responsibilities, and requirements…"
-            rows={5}
-            style={{ width:"100%", padding:14, background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", resize:"vertical", fontFamily:"var(--font-body)", lineHeight:1.65, transition:"border-color .2s" }}
-            onFocus={e => e.target.style.borderColor="var(--violet)"}
-            onBlur={e => e.target.style.borderColor="var(--border2)"}
-          />
-        </div>
-        <button className="btn btn--primary" style={{ width:"100%", justifyContent:"center", height:48, fontSize:15 }}>
-          Post Job →
-        </button>
+        )}
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom:18 }}>
+            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Job Title</label>
+            <input type="text" name="title" placeholder="e.g. Senior Frontend Developer" value={formData.title} onChange={handleChange}
+              style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", transition:"border-color .2s" }}
+              onFocus={e => e.target.style.borderColor="var(--violet)"} onBlur={e => e.target.style.borderColor="var(--border2)"} />
+          </div>
+          <div style={{ marginBottom:18 }}>
+            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Company Name</label>
+            <input type="text" name="company" placeholder="e.g. Acme Corp" value={formData.company} onChange={handleChange}
+              style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", transition:"border-color .2s" }}
+              onFocus={e => e.target.style.borderColor="var(--violet)"} onBlur={e => e.target.style.borderColor="var(--border2)"} />
+          </div>
+          <div style={{ marginBottom:18 }}>
+            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Location</label>
+            <input type="text" name="location" placeholder="e.g. Nairobi, Kenya or Remote" value={formData.location} onChange={handleChange}
+              style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", transition:"border-color .2s" }}
+              onFocus={e => e.target.style.borderColor="var(--violet)"} onBlur={e => e.target.style.borderColor="var(--border2)"} />
+          </div>
+          <div style={{ marginBottom:18 }}>
+            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Salary Range</label>
+            <input type="text" name="salary" placeholder="e.g. KES 80k–120k" value={formData.salary} onChange={handleChange}
+              style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", transition:"border-color .2s" }}
+              onFocus={e => e.target.style.borderColor="var(--violet)"} onBlur={e => e.target.style.borderColor="var(--border2)"} />
+          </div>
+          <div style={{ marginBottom:18 }}>
+            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Job Type</label>
+            <select name="jobType" value={formData.jobType} onChange={handleChange}
+              style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none" }}>
+              <option>Full-time</option><option>Contract</option><option>Part-time</option><option>Remote</option><option>Freelance</option>
+            </select>
+          </div>
+          <div style={{ marginBottom:24 }}>
+            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>Description</label>
+            <textarea name="description" placeholder="Describe the role, responsibilities, and requirements…" value={formData.description} onChange={handleChange} rows={5}
+              style={{ width:"100%", padding:14, background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", resize:"vertical", fontFamily:"var(--font-body)", lineHeight:1.65, transition:"border-color .2s" }}
+              onFocus={e => e.target.style.borderColor="var(--violet)"} onBlur={e => e.target.style.borderColor="var(--border2)"} />
+          </div>
+          <button type="submit" className="btn btn--primary" style={{ width:"100%", justifyContent:"center", height:48, fontSize:15, cursor:"pointer" }}>
+            {loading ? "Posting..." : "Post Job →"}
+          </button>
+        </form>
       </div>
     </Section>
   );
 }
 
-/* ─── CV POST PAGE ─── */
+
 export function CVPostPage() {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+    linkedinUrl: "",
+    currentRole: "",
+    expectedSalary: "",
+    file: null as File | null
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: any) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage("✗ File too large (max 5MB)");
+        return;
+      }
+      setFormData(prev => ({ ...prev, file }));
+    }
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setMessage("Please login first to upload CV");
+        setLoading(false);
+        return;
+      }
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("fullName", formData.fullName);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("phone", formData.phone);
+      formDataToSend.append("linkedinUrl", formData.linkedinUrl);
+      formDataToSend.append("currentRole", formData.currentRole);
+      formDataToSend.append("expectedSalary", formData.expectedSalary);
+      if (formData.file) {
+        formDataToSend.append("cvFile", formData.file);
+      }
+
+      const response = await fetch("/api/cv", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formDataToSend
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload CV");
+      }
+
+      setMessage("✓ CV uploaded successfully!");
+      setFormData({ fullName: "", email: "", phone: "", linkedinUrl: "", currentRole: "", expectedSalary: "", file: null });
+
+      setTimeout(() => setMessage(""), 3000);
+    } catch (error: any) {
+      setMessage("✗ Error uploading CV: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Section title="Upload Your CV" sub="Let companies find you. Upload your CV and get discovered by top recruiters.">
       <div style={{ maxWidth:520, margin:"0 auto", background:"var(--surface)", border:"1px solid var(--border2)", borderRadius:"var(--r-xl)", padding:"36px", animation:"fadeUp .4s ease both" }}>
-        {[
-          { label:"Full Name",       placeholder:"Athanas Mochama",           type:"text" },
-          { label:"Email Address",   placeholder:"you@example.com",           type:"email" },
-          { label:"Phone Number",    placeholder:"+254 7XX XXX XXX",          type:"tel" },
-          { label:"LinkedIn / Portfolio", placeholder:"https://linkedin.com/in/you", type:"url" },
-          { label:"Current Role",    placeholder:"e.g. Junior Developer",     type:"text" },
-          { label:"Expected Salary", placeholder:"e.g. KES 80,000",          type:"text" },
-        ].map(f => (
-          <div key={f.label} style={{ marginBottom:16 }}>
-            <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>{f.label}</label>
-            <input
-              type={f.type} placeholder={f.placeholder}
-              style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", transition:"border-color .2s" }}
-              onFocus={e => e.target.style.borderColor="var(--violet)"}
-              onBlur={e => e.target.style.borderColor="var(--border2)"}
-            />
+        {message && (
+          <div style={{ marginBottom:16, padding:12, background: message.includes("✓") ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)", color: message.includes("✓") ? "#10b981" : "#ef4444", borderRadius:"var(--r-md)", fontSize:14 }}>
+            {message}
           </div>
-        ))}
-        <div style={{ marginBottom:24, border:"2px dashed var(--border2)", borderRadius:"var(--r-lg)", padding:28, textAlign:"center" }}>
-          <div style={{ fontSize:32, marginBottom:10 }}>📎</div>
-          <p style={{ fontSize:14, color:"var(--text2)", marginBottom:6 }}>Drag &amp; drop your CV here</p>
-          <p style={{ fontSize:12, color:"var(--text3)" }}>PDF, DOC or DOCX — max 5MB</p>
-          <button className="btn btn--outline" style={{ marginTop:14 }}>Choose File</button>
-        </div>
-        <button className="btn btn--primary" style={{ width:"100%", justifyContent:"center", height:48, fontSize:15 }}>
-          Upload CV →
-        </button>
+        )}
+        <form onSubmit={handleSubmit}>
+          {[
+            { name: "fullName", label:"Full Name",       placeholder:"Athanas Mochama" },
+            { name: "email", label:"Email Address",   placeholder:"you@example.com" },
+            { name: "phone", label:"Phone Number",    placeholder:"+254 7XX XXX XXX" },
+            { name: "linkedinUrl", label:"LinkedIn / Portfolio", placeholder:"https://linkedin.com/in/you" },
+            { name: "currentRole", label:"Current Role",    placeholder:"e.g. Junior Developer" },
+            { name: "expectedSalary", label:"Expected Salary", placeholder:"e.g. KES 80,000" },
+          ].map(f => (
+            <div key={f.name} style={{ marginBottom:16 }}>
+              <label style={{ fontSize:13, fontWeight:600, color:"var(--text2)", display:"block", marginBottom:7 }}>{f.label}</label>
+              <input
+                type={f.name === "email" ? "email" : f.name === "linkedinUrl" ? "url" : "text"}
+                name={f.name} placeholder={f.placeholder} value={formData[f.name as keyof typeof formData] as string}
+                onChange={handleChange}
+                style={{ width:"100%", height:44, padding:"0 14px", background:"var(--surface2)", border:"1.5px solid var(--border2)", borderRadius:"var(--r-md)", color:"var(--text)", fontSize:14, outline:"none", transition:"border-color .2s" }}
+                onFocus={e => e.target.style.borderColor="var(--violet)"}
+                onBlur={e => e.target.style.borderColor="var(--border2)"}
+              />
+            </div>
+          ))}
+          <div style={{ marginBottom:24, border:"2px dashed var(--border2)", borderRadius:"var(--r-lg)", padding:28, textAlign:"center" }}>
+            <div style={{ fontSize:32, marginBottom:10 }}>📎</div>
+            <p style={{ fontSize:14, color:"var(--text2)", marginBottom:6 }}>
+              {formData.file ? `✓ ${formData.file.name}` : "Drag & drop your CV here"}
+            </p>
+            <p style={{ fontSize:12, color:"var(--text3)" }}>PDF, DOC or DOCX — max 5MB</p>
+            <label className="btn btn--outline" style={{ marginTop:14, cursor:"pointer", display:"inline-block" }}>
+              Choose File
+              <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} style={{ display:"none" }} />
+            </label>
+          </div>
+          <button type="submit" disabled={loading || !formData.file} className="btn btn--primary" style={{ width:"100%", justifyContent:"center", height:48, fontSize:15, opacity: loading || !formData.file ? 0.6 : 1 }}>
+            {loading ? "Uploading..." : "Upload CV →"}
+          </button>
+        </form>
       </div>
     </Section>
   );

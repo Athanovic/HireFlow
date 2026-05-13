@@ -1,4 +1,4 @@
-// src/pages/Home.jsx
+
 import { useEffect, useMemo, useState } from "react";
 import Filters from "../components/Filters";
 import JobList from "../components/JobList";

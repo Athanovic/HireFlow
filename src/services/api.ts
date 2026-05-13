@@ -6,7 +6,7 @@ const DEFAULT_TIMEOUT = 12000;
 // Backend proxy integration:
 // - In development, Vite proxies `/api` to the local backend server.
 // - In production, this will fall back to Remotive if the backend is unavailable.
-const CUSTOM_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/";
+const CUSTOM_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 const safeText = (value, fallback = "") => {
   if (value === undefined || value === null) return fallback;

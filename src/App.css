@@ -1,14 +1,4 @@
-/* src/App.css */
 
-/* =========================================================
-   APP LAYOUT FIX
-   Works with:
-   <div className="app app-shell">
-     <Navbar />
-     <main className="main-content app__body">...</main>
-     <footer className="footer">...</footer>
-   </div>
-========================================================= */
 
 .app,
 .app-shell {
@@ -22,7 +12,6 @@
     var(--bg);
 }
 
-/* Main page content must grow and push footer down */
 .main-content,
 .app__body {
   flex: 1 0 auto;
@@ -31,14 +20,13 @@
   flex-direction: column;
 }
 
-/* Every rendered page should fill available space */
+
 .page,
 .page--home {
   flex: 1 0 auto;
   width: 100%;
 }
 
-/* Keep navbar at top without covering content */
 .navbar {
   position: sticky;
   top: 0;
@@ -46,7 +34,7 @@
   width: 100%;
 }
 
-/* Footer stays at bottom */
+
 .footer {
   flex-shrink: 0;
   margin-top: auto;
@@ -65,7 +53,6 @@
   font-weight: 800;
 }
 
-/* Prevent sections being hidden behind sticky navbar when scrolling */
 #jobs-anchor,
 .hero,
 .about,
@@ -75,7 +62,7 @@
   scroll-margin-top: 90px;
 }
 
-/* Detail/info pages should not collapse */
+
 .detail-page,
 .info-page,
 .about-page,

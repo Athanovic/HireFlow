@@ -1,4 +1,4 @@
-// src/components/JobList.jsx
+
 import JobCard from "./JobCard";
 
 function JobList({ jobs=[], savedIds, onSave, onSelect }) {

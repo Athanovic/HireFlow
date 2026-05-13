@@ -1,4 +1,4 @@
-// src/pages/JobDetails.jsx
+
 import { LOGO_COLORS, normalizeType } from "../services/api";
 
 function getInitials(n=""){return n.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase();}

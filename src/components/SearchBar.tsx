@@ -1,4 +1,4 @@
-// src/components/SearchBar.jsx
+
 
 function SearchIcon() {
   return (

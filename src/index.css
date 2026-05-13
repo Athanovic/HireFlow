@@ -51,7 +51,7 @@
   --shadow-glow: 0 0 40px rgba(124, 92, 252, 0.15);
 }
 
-/* RESET */
+
 *,
 *::before,
 *::after {
@@ -87,7 +87,7 @@ body {
   overflow-x: hidden;
 }
 
-/* APP HEIGHT FIX */
+
 #root {
   min-height: 100vh;
   display: flex;
@@ -118,7 +118,7 @@ main,
   width: 100%;
 }
 
-/* BASE ELEMENTS */
+
 a {
   color: inherit;
   text-decoration: none;
@@ -150,7 +150,7 @@ canvas {
   margin: 0 auto;
 }
 
-/* Prevent scroll target hiding behind sticky navbar */
+
 .hero,
 .about,
 .why,
@@ -177,7 +177,7 @@ canvas {
   background: var(--violet);
 }
 
-/* ANIMATIONS */
+
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -293,7 +293,7 @@ canvas {
   }
 }
 
-/* MOBILE GLOBAL FIX */
+
 @media (max-width: 768px) {
   body {
     font-size: 14px;
@@ -312,7 +312,7 @@ canvas {
   }
 }
 
-/* REDUCED MOTION */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

@@ -1,11 +1,12 @@
 const REMOTIVE_API_URL = process.env.REMOTIVE_API_URL || "https://remotive.com/api/remote-jobs";
 
-const safeText = (value, fallback = "") => {
+
+const safeText = (value: any, fallback = ""): string => {
   if (value === undefined || value === null) return fallback;
   return String(value);
 };
 
-const stripHtml = (html = "") => {
+const stripHtml = (html = ""): string => {
   return safeText(html)
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
@@ -16,34 +17,35 @@ const stripHtml = (html = "") => {
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&rsquo;/g, "’")
-    .replace(/&lsquo;/g, "‘")
-    .replace(/&rdquo;/g, "”")
-    .replace(/&ldquo;/g, "“")
+    .replace(/&rsquo;/g, "'")
+    .replace(/&lsquo;/g, "'")
+      .replace(/&rdquo;/g, '"')
+      .replace(/&ldquo;/g, '"')
     .replace(/&mdash;/g, "—")
     .replace(/&ndash;/g, "–")
     .replace(/\s{2,}/g, " ")
     .trim();
 };
 
-const normalizeType = (type = "") => {
-  const value = safeText(type).toLowerCase().replace(/[_\s-]/g, "");
+const normalizeType = (type = ""): string => {
+  const normalized = safeText(type).toLowerCase().replace(/[_\s-]/g, "");
 
-  if (value.includes("fulltime") || value === "full") return "full-time";
-  if (value.includes("contract")) return "contract";
-  if (value.includes("parttime") || value === "part") return "part-time";
-  if (value.includes("freelance")) return "freelance";
-  if (value.includes("remote")) return "remote";
+  if (normalized.includes("fulltime") || normalized === "full") return "full-time";
+  if (normalized.includes("contract")) return "contract";
+  if (normalized.includes("parttime") || normalized === "part") return "part-time";
+  if (normalized.includes("freelance")) return "freelance";
+  if (normalized.includes("remote")) return "remote";
 
-  return value || "remote";
+  return normalized || "remote";
 };
 
-const formatDate = (value) => {
+const formatDate = (value: any): string => {
   if (!value) return "";
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return value;
   return d.toDateString();
 };
+
 
 const normalizeJob = (job: any = {}) => {
   const fullDescription = stripHtml(
@@ -72,7 +74,7 @@ const normalizeJob = (job: any = {}) => {
     jobType: normalizeType(job.job_type || job.jobType || job.type || "remote"),
     location: safeText(job.candidate_required_location || job.location || "Remote"),
     salary: safeText(job.salary, ""),
-    description: fullDescription.length > 260 ? `${fullDescription.slice(0,260)}...` : fullDescription || "No description available yet.",
+    description: fullDescription.length > 260 ? `${fullDescription.slice(0, 260)}...` : fullDescription || "No description available yet.",
     fullDescription: fullDescription || "No description available yet.",
     url: safeText(job.url || job.job_url || ""),
     applicationUrl: safeText(job.application_url || job.applicationUrl || ""),
@@ -84,7 +86,8 @@ const normalizeJob = (job: any = {}) => {
   };
 };
 
-const getJobsArrayFromResponse = (data: any) => {
+
+const getJobsArrayFromResponse = (data: any): any[] => {
   if (Array.isArray(data)) return data;
   if (Array.isArray(data?.jobs)) return data.jobs;
   if (Array.isArray(data?.data)) return data.data;
@@ -92,7 +95,8 @@ const getJobsArrayFromResponse = (data: any) => {
   return [];
 };
 
-const buildQueryString = (params = {}) => {
+
+const buildQueryString = (params: { search?: string; category?: string; limit?: number | string } = {}): string => {
   const searchParams = new URLSearchParams();
 
   if (params.search) searchParams.append("search", String(params.search));
@@ -101,6 +105,7 @@ const buildQueryString = (params = {}) => {
 
   return searchParams.toString() ? `?${searchParams.toString()}` : "";
 };
+
 
 export const fetchJobs = async ({
   search = "",
@@ -118,12 +123,17 @@ export const fetchJobs = async ({
   if (!resp.ok) throw new Error(`Remote API responded ${resp.status}`);
   const data = await resp.json();
 
-  const jobs = getJobsArrayFromResponse(data).map(normalizeJob).slice(0, Number(limit) || 40);
+  const jobs = getJobsArrayFromResponse(data)
+    .map(normalizeJob)
+    .slice(0, Number(limit) || 40);
+
   return jobs;
 };
 
+
 export const fetchJobById = async (id: string | number) => {
   if (!id) return null;
+
   const jobs = await fetchJobs({ limit: 500 });
-  return jobs.find((j) => String(j.id) === String(id)) || null;
+  return jobs.find((job) => String(job.id) === String(id)) || null;
 };

@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+
 import { createServer as createNetServer } from "net";
 import { spawn } from "child_process";
 
@@ -28,7 +28,6 @@ const run = async () => {
       stdio: "inherit",
     });
 
-    // wait for backend /health to be available
     const healthUrl = `http://127.0.0.1:${backendPort}/health`;
 
     const waitForHealth = async (retries = 20, delay = 250) => {
@@ -70,12 +69,12 @@ const run = async () => {
       try {
         backend.kill();
       } catch {
-        // Ignore errors during cleanup
+        
       }
       try {
         client.kill();
       } catch {
-        // Ignore errors during cleanup
+        
       }
       process.exit(0);
     };
