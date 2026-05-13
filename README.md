@@ -1,137 +1,89 @@
-# HireFlow
+HireFlow
 
-HireFlow is a job search and hiring web application built with React and Vite.
+Project Overview:
+HireFlow is a job search website built using React and Vite.
+The system helps users:
 
-It helps users browse jobs, search for jobs, filter jobs by category, view job details, and save jobs they like.
+Search for jobs:
+Filter jobs by category
+View job details
+Save jobs
+Apply for jobs
+Navigate different career pages
 
----
+The project is mainly a frontend application.
 
-## Repository Description
+Technologies Used:
+React
+JavaScript
+Vite
+CSS
+Git & GitHub
+GitHub Pages
 
-This repository contains the source code for HireFlow. It includes the React frontend, reusable components, styling files, page logic, and frontend API helper logic used to fetch and display job listings.
+Main Features:
+Browse jobs
+Search jobs
+Filter jobs
+View full job details
+Save favorite jobs
+Apply using external links
+Responsive design
+Loading and error handling
 
-The `backend/` folder currently exists as a placeholder only. It does not contain backend files yet.
 
----
 
-## Purpose of the Project
+Team Members & Roles
+Athanas – Frontend & Design
+Worked on:
+Navbar
+Home page
+Styling
+Mobile responsiveness
 
-The purpose of HireFlow is to make job searching easier, faster, and more organized.
+Files:
+Navbar.jsx
+Home.jsx
+main.css
+App.css
+index.css
 
-Users can:
+Abdirahman Cabdi – API & App Logic
+Worked on:
+Fetch logic
+Job data handling
+App state management
+Loading and error handling
 
-- View available jobs
-- Search for jobs
-- Filter jobs by category
-- View full job details
-- Save jobs
-- Visit pages like About, Categories, Candidates, News, Job Post, and CV Post
 
----
+Files:
+api.js
+App.jsx
 
-## Team Members and Responsibilities
+Donald – Job Display
+Worked on:
+Job cards
+Job list display
 
-### 👨‍💻 Athanas – Frontend Lead
+Files:
+JobCard.jsx
+JobList.jsx
 
-**Responsibilities**
+Albert – UX & Interaction
+Worked on:
 
-- Navbar
-- Home page layout
-- Page design
-- Basic styling
-- Mobile responsiveness
 
-**Files**
+Search bar
+Filters
+Loader
+Error messages
 
-- `src/components/Navbar.jsx`
-- `src/pages/Home.jsx`
-- `src/styles/main.css`
-- `src/App.css`
-- `src/index.css`
+Files:
+SearchBar.jsx
+Filters.jsx
+Loader.jsx
+Error.jsx
 
----
-
-### 👨‍💻 Abdirahman Cabdi – API & Logic Lead
-
-**Responsibilities**
-
-- Frontend API helper logic
-- Fetch logic
-- Job data handling
-- App state management
-- Loading and error handling
-- Main app logic
-
-**Files**
-
-- `src/services/api.js`
-- `src/App.jsx`
-
----
-
-### 👨‍💻 Donald – Data Display Lead
-
-**Responsibilities**
-
-- Job cards
-- Job list
-- Displaying job information clearly
-
-**Files**
-
-- `src/components/JobList.jsx`
-- `src/components/JobCard.jsx`
-
----
-
-### 👨‍💻 Albert – Interaction & UX Lead
-
-**Responsibilities**
-
-- Search
-- Filters
-- Loader
-- Error messages
-- User interaction
-
-**Files**
-
-- `src/components/SearchBar.jsx`
-- `src/components/Filters.jsx`
-- `src/components/Loader.jsx`
-- `src/components/Error.jsx`
-
----
-
-## Main Features
-
-- Browse available jobs
-- Search jobs by keyword
-- Filter jobs by category
-- View job details
-- Save jobs
-- Navigate between different pages
-- Loading and error states
-- Frontend API helper for job data
-- GitHub Pages deployment support
-
----
-
-## Technologies Used
-
-- React
-- JavaScript
-- Vite
-- CSS
-- Git
-- GitHub
-- GitHub Pages
-
----
-
-## Folder Structure
-
-```txt
 HIREFLOW2/
 │
 ├── backend/
@@ -175,375 +127,91 @@ HIREFLOW2/
 ├── package-lock.json
 ├── README.md
 └── vite.config.js
-```
 
----
+Important Files
+App.jsx:
+Controls the main app logic:
+Navigation
+Selected jobs
+Saved jobs
+Search
+Filters
 
-## Important Files
+api.js
+Handles job data and frontend API logic.
 
-### `src/main.jsx`
+Home.jsx:
+Displays
+Search section
+Filters
+Job listings
 
-Starts the React app and connects it to `index.html`.
+JobDetails.jsx:
+Shows full information about a selected job.
 
----
-
-### `src/App.jsx`
-
-Controls the main logic of the app.
-
-It manages:
-
-- Current page
-- Selected job
-- Saved jobs
-- Search term
-- Active category
-- Navigation logic
-
----
-
-### `src/pages/Home.jsx`
-
-Displays the home page, search area, filters, and job listings.
-
----
-
-### `src/pages/JobDetails.jsx`
-
-Displays full information about a selected job.
-
----
-
-### `src/pages/InfoPages.jsx`
-
-Contains extra pages such as:
-
-- About
-- Categories
-- Candidates
-- News
-- Post Job
-- CV Post
-
----
-
-### `src/services/api.js`
-
-Contains the frontend job data and API helper logic.
-
-This file helps the app:
-
-- Fetch jobs
-- Filter jobs
-- Normalize job data
-- Handle fallback demo jobs
-- Open apply links
-
----
-
-### `backend/`
-
-This folder is currently empty.
-
-It is kept as a placeholder for future backend work if the project later needs a real backend server, database, routes, or controllers.
-
----
-
-## How the App Works
-
-HireFlow currently works mainly as a frontend React application.
-
-Flow:
-
-```txt
-User searches or filters jobs
+How HireFlow Works:
+ User searches/filter jobs
+       ↓
+ React updates state
         ↓
-React frontend updates state
+  api.js processes job data
         ↓
-src/services/api.js handles job data
-        ↓
-Jobs are displayed in JobList and JobCard
-        ↓
-User can view details or apply
-```
+  Jobs display on screen
+       ↓
+   User views or applies
 
----
 
-## GitHub Pages Note
+Running the Project:
+1. Clone Repository
+git clone https://github.com/AbdiCHAN/HireFlow2.git
 
-GitHub Pages only hosts frontend/static websites.
-
-That means GitHub Pages can run:
-
-- HTML
-- CSS
-- JavaScript
-- React build files
-
-GitHub Pages does not run a backend server.
-
-For this project, the live GitHub Pages version uses frontend logic from:
-
-```txt
-src/services/api.js
-```
-
----
-
-## How to Run the Project Locally
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-```
-
-### 2. Open the Project Folder
-
-```bash
+2. Open Folder
 cd HireFlow2
-```
 
-### 3. Install Dependencies
-
-```bash
+3. Install Packages
 npm install
-```
 
-### 4. Run the Project
-
-```bash
+4. Run Project
 npm run dev
-```
 
-### 5. Open the Local Website
+5. Open Browser
+http://localhost:5173
 
-```txt
-http://localhost:5173/
-```
-
----
-
-## How to Build the Project
-
-```bash
+Build Project:
 npm run build
-```
 
-This creates a production-ready version of the app inside the `dist/` folder.
-
----
-
-## How to Deploy to GitHub Pages
-
-Make sure GitHub Pages is set to:
-
-```txt
-Source: Deploy from a branch
-Branch: gh-pages
-Folder: / root
-```
-
-Then deploy with:
-
-```bash
+Deploy to GitHub Pages:
 npm run deploy
-```
 
-After deployment, the live website should be available at:
+Live Site:
+HireFlow Live Website
 
-```txt
-https://abdichan.github.io/HireFlow2/
-```
-
----
-
-## How to Push Changes
-
-After editing files, run:
-
-```bash
-git status
-git add .
-git commit -m "Update HireFlow"
-git push origin main
-```
-
-Then redeploy:
-
-```bash
-npm run deploy
-```
-
----
-
-## How to Use HireFlow
-
-1. Open the website.
-2. Browse the available jobs.
-3. Use the search bar to search for a job.
-4. Use the filters to choose a category.
-5. Click on a job card to view full details.
-6. Click the save icon to save a job.
-7. Click Apply to open the job application link.
-8. Use the navbar to move between pages.
-
----
-
-## Git Branches
-
-The project uses different branches for different team members.
-
-```txt
+Git Branches:
 main
 donald
 ui-ux-interaction
 feature/ui-navbar
 feature/api-fetch-logic
-```
 
----
+Git Workflow
+Pull Latest Changes:
+git checkout maingit pull origin main
 
-## Branch Responsibilities
-
-### `main`
-
-Main stable branch. Only working code should be merged here.
-
----
-
-### `donald`
-
-Used for job display work.
-
-Files:
-
-- `src/components/JobList.jsx`
-- `src/components/JobCard.jsx`
-
----
-
-### `ui-ux-interaction`
-
-Used for interaction and UX work.
-
-Files:
-
-- `src/components/SearchBar.jsx`
-- `src/components/Filters.jsx`
-- `src/components/Loader.jsx`
-- `src/components/Error.jsx`
-
----
-
-### `feature/ui-navbar`
-
-Used for frontend layout and navbar work.
-
-Files:
-
-- `src/components/Navbar.jsx`
-- `src/pages/Home.jsx`
-- CSS files
-
----
-
-### `feature/api-fetch-logic`
-
-Used for Abdirahman Cabdi’s API and app logic work.
-
-Files:
-
-- `src/services/api.js`
-- `src/App.jsx`
-
----
-
-## Git Flow
-
-### 1. Start from main
-
-```bash
-git checkout main
-git pull origin main
-```
-
-### 2. Switch to your branch
-
-Example:
-
-```bash
+Switch Branch:
 git checkout feature/api-fetch-logic
-```
 
-### 3. Make your changes
-
-Work on the files assigned to your role.
-
-### 4. Check changes
-
-```bash
-git status
-```
-
-### 5. Add changes
-
-```bash
+Add Changes:
 git add .
-```
 
-### 6. Commit changes
+Commit:
+git commit -m "Update feature"
 
-```bash
-git commit -m "Fix app logic"
-```
+Push Changes
+git push origin branch-name
 
-### 7. Push branch
+Project Summary:
+HireFlow is a React-based job search platform that allows users to search, filter, save, and apply for jobs.
 
-```bash
-git push origin feature/api-fetch-logic
-```
+The project is divided into team roles so each member works on a specific part of the system.
 
-### 8. Create a Pull Request
-
-Create a pull request from your branch into `main`.
-
-Example:
-
-```txt
-feature/api-fetch-logic → main
-```
-
----
-
-## Example Commit Messages
-
-```txt
-Fix app logic
-Update job cards
-Improve navbar styling
-Add loader component
-Fix search filtering
-Update README
-Improve mobile responsiveness
-Deploy to GitHub Pages
-```
-
----
-
-## Project Summary
-
-HireFlow is a React and Vite job search platform.
-
-It allows users to:
-
-- Search jobs
-- Filter jobs
-- View job details
-- Save jobs
-- Apply for jobs
-- Navigate career pages
-
-The project is divided into team roles so each member works on a clear part of the system.
-
-The `backend/` folder is currently empty and is only kept for future backend development.
+The backend/ folder is currently empty and reserved for future backend development.
